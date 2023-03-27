@@ -1,23 +1,25 @@
-
-# pip install wget PyMuPDF
+# pip install wget PyMuPDF validators
 
 from requests import get
 from bs4 import BeautifulSoup as soupify
 from wget import download
 import os
 import fitz
+from validators import url as validate
+
 
 def get_pdfs_from_url(url):
-    soup = soupify(get(url).content )
-    for raw_url in soup.find_all("a"):
-        link = raw_url.get("href")
-        if str(link).endswith(".pdf"):
-            
-            try:
-                download(link, out=os.path.join(  os.getcwd() , "pdfs"  ))
-                
-            except Exception  as e:
-                print(e)
+    if validate(url):
+        soup = soupify(get(url).content )
+        for raw_url in soup.find_all("a"):
+            link = raw_url.get("href")
+            if str(link).endswith(".pdf"):
+
+                try:
+                    download(link, out=os.path.join(  os.getcwd() , "pdfs"  ))
+
+                except Exception  as e:
+                    print(e)
                 
 def text_from_pdf(pdf_path):
     doc = fitz.open(pdf_path)
@@ -44,5 +46,6 @@ def pdfs_to_txt(outpath="pdfs"):
 
 
 if __name__ == "__main__":
-    get_pdfs_from_url("https://www.hubeali.com/online-books/online-english-books/bihar-al-anwaar/")
+    # url here
+    get_pdfs_from_url("")
     pdfs_to_txt()
